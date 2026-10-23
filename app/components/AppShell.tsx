@@ -8,7 +8,7 @@ import { BrandMark } from '@/app/components/BrandMark';
 import { isSupabaseConfigured, supabase } from '@/app/lib/supabase';
 
 const links = [
-  { href: '/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'لوحة التحكم ', icon: LayoutDashboard },
   { href: '/plan', label: 'خطة جديدة', icon: Map },
   { href: '/plans', label: 'خططي المحفوظة', icon: Map },
   { href: '/settings', label: 'الإعدادات', icon: Settings },
@@ -56,7 +56,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         {open && <nav className="border-t border-line/70 bg-panel px-4 py-3 lg:hidden">{links.map(({ href, label, icon: Icon }) => <Link key={href} onClick={() => setOpen(false)} href={href} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-label hover:bg-brand-soft hover:text-strong"><Icon size={17} />{label}</Link>)}</nav>}
       </header>
-      {!isSupabaseConfigured && <div className="container-page pt-5"><div className="rounded-xl border border-amber/25 bg-amber/10 px-4 py-2 text-xs text-amber">وضع الإعداد: أضف اتصال Supabase لتفعيل الحسابات والحفظ الدائم.</div></div>}
+      {!isSupabaseConfigured && <div className="container-page pt-5"><div className="rounded-xl border border-amber/25 bg-amber/10 px-4 py-2 text-xs text-amber"> </div></div>}
       <main>{children}</main>
     </div>
   );
