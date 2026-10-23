@@ -39,9 +39,16 @@ EQA Tactical — Arabic (RTL) war-planning tool. Next.js 14 App Router + TypeScr
 - Player rows grow progressively: `players` holds one trailing blank row and
   `ensureTrailingBlank` appends a new one as soon as the last is filled. Blank rows
   use `blank-<n>` ids, never persisted (`persist` maps them to `crypto.randomUUID()`).
+- Buildings are the eleven real Desert Storm positions, numbered along the map
+  border path (top-right corner, down the right side, left across the bottom, up
+  the left side, right across the top, then the centre column). Each entry in
+  `DEFAULT_BUILDINGS` carries its in-game `L/R/C` label as a trailing comment.
+  Renumbering changes `plan_buildings.building_number`, so saved plans must be
+  re-checked whenever the order moves.
 - Distribution rules live in `app/lib/algorithm.ts`. `distributePlayers` fills the
-  highest-yield buildings first and skips the minute-10 centre (buildings 3, 6, 10,
-  flagged by `unlockMinute`) whenever there are not enough players for every
+  highest-yield buildings first and skips the minute-10 centre (buildings 5, 10 and
+  11, flagged by `unlockMinute`) whenever there are not enough players for every
   building. One player is enough to hold a building (`covered` means `>= 1`), and
-  `expectedPoints` only counts the seconds after `unlockMinute`.
+  `expectedPoints` only counts the seconds after `unlockMinute`. The two 50/s
+  refineries tie on rate, so the lower id takes the stronger player.
 - Unit tests live in `tests/` and cover pure logic only (`app/lib/*`).

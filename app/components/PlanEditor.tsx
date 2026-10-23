@@ -172,7 +172,7 @@ export function PlanEditor() {
       setMessage(`تم إنشاء توزيع متوازن يغطي ${coveredCount} مبنى.`);
       return;
     }
-    const lockedNote = lockedSkipped.length ? ` المباني ${lockedSkipped.map((building) => building.id).join('، ')} تُفتح في الدقيقة ${lockedSkipped[0].unlockMinute} وتركت بلا لاعب.` : '';
+    const lockedNote = lockedSkipped.length ? ` المباني المغلقة (${lockedSkipped.map((building) => building.name).join('، ')}) تُفتح في الدقيقة ${lockedSkipped[0].unlockMinute} وتركت بلا لاعب.` : '';
     setMessage(`تم التوزيع: ${coveredCount} مبنى مغطى و${emptyCount} مبنى بلا لاعب حسب أولوية النقاط.${lockedNote}`);
   }
 
@@ -199,7 +199,7 @@ export function PlanEditor() {
     const building = buildings.find((item) => item.id === buildingId);
     if (!building?.enabled) { setError('لا يمكن نقل لاعب إلى مبنى معطل.'); return; }
     setAssignments((current) => [...current.filter((assignment) => assignment.playerId !== selectedPlayerId), { playerId: selectedPlayerId, buildingId }]);
-    setSelectedPlayerId(null); setError(''); setDirty(true); setMessage('تم نقل اللاعب إلى المبنى المحدد.');
+    setSelectedPlayerId(null); setError(''); setDirty(true); setMessage(`تم نقل اللاعب إلى ${building.name}.`);
   }
 
   function swapPlayers(playerId: string) {

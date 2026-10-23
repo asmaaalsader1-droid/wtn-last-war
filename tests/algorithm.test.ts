@@ -29,8 +29,9 @@ describe('EQA Tactical distribution', () => {
   it('puts the strongest player on the highest-yield open building', () => {
     const result = distributePlayers(players(3), cloneDefaultBuildings());
     const strongest = result.assignments.find((assignment) => assignment.playerId === 'p-1');
-    // Building 6 is the richest but locked, so building 4 (50/s) wins.
-    expect(strongest?.buildingId).toBe(4);
+    // The nuclear silo (11) is the richest but locked, so the 50/s refineries
+    // win; the two tie, and the lower number takes the stronger player.
+    expect(strongest?.buildingId).toBe(3);
   });
 
   it('spreads players evenly once every building can take one', () => {
@@ -56,16 +57,25 @@ describe('EQA Tactical distribution', () => {
   });
 
   it('discounts the minutes a building is still locked', () => {
-    const locked = cloneDefaultBuildings().filter((building) => building.id === 6);
+    const locked = cloneDefaultBuildings().filter((building) => building.id === 11);
     const result = distributePlayers(players(2), locked);
     expect(result.expectedPoints).toBe(locked[0].rate * (1800 - 10 * 60));
   });
 
+  it('numbers the map along the border path the leader reads', () => {
+    const ordered = cloneDefaultBuildings().slice().sort((a, b) => a.id - b.id);
+    expect(ordered.map((building) => building.name)).toEqual([
+      'مستشفى 1', 'مستشفى 2', 'مصفاة 3', 'مركز العلوم 4', 'مصنع المرتزقة 5',
+      'مستشفى 6', 'مستشفى 7', 'مصفاة 8', 'مركز المعلومات 9', 'ترسانة 10', 'صومعة نووية 11',
+    ]);
+    expect(ordered.map((building) => building.unlockMinute)).toEqual([0, 0, 0, 0, 10, 0, 0, 0, 0, 10, 10]);
+  });
+
   it('never assigns a disabled building', () => {
-    const buildings = cloneDefaultBuildings().map((building) => building.id === 4 ? { ...building, enabled: false } : building);
+    const buildings = cloneDefaultBuildings().map((building) => building.id === 8 ? { ...building, enabled: false } : building);
     const result = distributePlayers(players(20), buildings);
-    expect(result.assignments.some((assignment) => assignment.buildingId === 4)).toBe(false);
-    expect(result.buildings.find((building) => building.id === 4)?.players).toHaveLength(0);
+    expect(result.assignments.some((assignment) => assignment.buildingId === 8)).toBe(false);
+    expect(result.buildings.find((building) => building.id === 8)?.players).toHaveLength(0);
   });
 
   it('keeps the same input deterministic', () => {
