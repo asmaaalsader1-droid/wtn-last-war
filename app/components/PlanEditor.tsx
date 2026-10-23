@@ -349,7 +349,7 @@ export function PlanEditor() {
               <h2 className="mt-1 text-lg font-black text-strong">ابدأ ببناء خطة الفوز  </h2>
               <p className="mt-1 text-xs leading-6 text-muted">التوزيع على حسب البيانات التالي عدد المباني = عدد المشاركين سيكون 1 لكل مبنى اذا كان عدد المشاركين اكبر سيتم التوزيع 2 لكل مبنى او اكثر حسب فائدة كل مبنى لكسب نقاط اكثر ورفع احتمالية الفوز </p>
             </div>
-            <button onClick={generate} className="btn-primary"><Sparkles size={17} /> توزيع متساوي القوة قوي = 2 متوسط او ضعيف | او 3 متوسط بحسب المبنى الموزع عليه وفائدته</button>
+            <button onClick={generate} className="btn-primary"><Sparkles size={17} /> بدء التوزيع</button>
           </div>
         </section>
       </div>
