@@ -11,6 +11,8 @@ export interface Building {
   name: string;
   rate: number;
   enabled: boolean;
+  /** Battle minute the building can be captured on. The centre unlocks at 10. */
+  unlockMinute: number;
   mapPosition: { x: number; y: number };
   labelPosition: { x: number; y: number; width: number };
 }

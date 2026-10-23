@@ -39,4 +39,9 @@ EQA Tactical — Arabic (RTL) war-planning tool. Next.js 14 App Router + TypeScr
 - Player rows grow progressively: `players` holds one trailing blank row and
   `ensureTrailingBlank` appends a new one as soon as the last is filled. Blank rows
   use `blank-<n>` ids, never persisted (`persist` maps them to `crypto.randomUUID()`).
+- Distribution rules live in `app/lib/algorithm.ts`. `distributePlayers` fills the
+  highest-yield buildings first and skips the minute-10 centre (buildings 3, 6, 10,
+  flagged by `unlockMinute`) whenever there are not enough players for every
+  building. One player is enough to hold a building (`covered` means `>= 1`), and
+  `expectedPoints` only counts the seconds after `unlockMinute`.
 - Unit tests live in `tests/` and cover pure logic only (`app/lib/*`).

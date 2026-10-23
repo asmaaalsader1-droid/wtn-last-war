@@ -165,7 +165,15 @@ export function PlanEditor() {
     const distribution = distributePlayers(activePlayers, buildings);
     setAssignments(distribution.assignments);
     setDirty(true);
-    setMessage(distribution.uncoveredBuildingIds.length ? `تم التوزيع. بقيت ${distribution.uncoveredBuildingIds.length} مبانٍ أقل أهمية فارغة لأن العدد لا يكفي لتكوين مجموعتين من لاعبين.` : 'تم إنشاء توزيع متوازن قابل للتعديل.');
+    const coveredCount = distribution.buildings.filter((building) => building.covered).length;
+    const emptyCount = distribution.uncoveredBuildingIds.length;
+    const lockedSkipped = distribution.buildings.filter((building) => building.enabled && !building.covered && building.unlockMinute > 0);
+    if (emptyCount === 0) {
+      setMessage(`تم إنشاء توزيع متوازن يغطي ${coveredCount} مبنى.`);
+      return;
+    }
+    const lockedNote = lockedSkipped.length ? ` المباني ${lockedSkipped.map((building) => building.id).join('، ')} تُفتح في الدقيقة ${lockedSkipped[0].unlockMinute} وتركت بلا لاعب.` : '';
+    setMessage(`تم التوزيع: ${coveredCount} مبنى مغطى و${emptyCount} مبنى بلا لاعب حسب أولوية النقاط.${lockedNote}`);
   }
 
   function generate() {
@@ -326,6 +334,7 @@ export function PlanEditor() {
                 <span>
                   <span className="block text-sm font-black text-strong">{building.name}</span>
                   <span className="mt-1 block text-xs text-muted">+{building.rate} نقطة/ثانية</span>
+                  <span className={`mt-1 block text-[11px] font-bold ${building.unlockMinute > 0 ? 'text-amber' : 'text-brand'}`}>{building.unlockMinute > 0 ? `تُفتح في الدقيقة ${building.unlockMinute}` : 'متاحة من البداية'}</span>
                 </span>
                 <span className={`grid h-6 w-6 place-items-center rounded-full border ${building.enabled ? 'border-brand bg-brand text-white' : 'border-line text-muted'}`}>{building.enabled && <Check size={14} />}</span>
               </button>
@@ -338,7 +347,7 @@ export function PlanEditor() {
             <div>
               <span className="eyebrow">04 / ACTION</span>
               <h2 className="mt-1 text-lg font-black text-strong">أنشئ التوزيع الأولي</h2>
-              <p className="mt-1 text-xs leading-6 text-muted">الأولوية لقيمة المبنى، ثم توازن القوة. بعد ذلك يمكنك نقل أي لاعب إلى أي مبنى مفعّل.</p>
+              <p className="mt-1 text-xs leading-6 text-muted">أولوية النقاط أولاً: الأقوى على المبنى الأعلى إنتاجاً، والأعداد الصغيرة لا توضع على المباني المغلقة. بعد ذلك يمكنك نقل أي لاعب إلى أي مبنى مفعّل.</p>
             </div>
             <button onClick={generate} className="btn-primary"><Sparkles size={17} /> توزيع تكتيكي</button>
           </div>
@@ -367,8 +376,14 @@ export function PlanEditor() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="panel-soft p-3"><span className="text-xs text-muted">القوة الإجمالية</span><strong className="stat-number">{formatPower(result.totalPower)}</strong></div>
             <div className="panel-soft p-3"><span className="text-xs text-muted">الموزعون</span><strong className="stat-number">{result.assignedPlayers}</strong></div>
-            <div className="panel-soft p-3"><span className="text-xs text-muted">التوازن</span><strong className="stat-number text-brand">{result.balanceScore}%</strong></div>
+            <div className="panel-soft p-3"><span className="text-xs text-muted">المباني المغطاة</span><strong className="stat-number text-brand">{result.buildings.filter((building) => building.covered).length}</strong></div>
             <div className="panel-soft p-3"><span className="text-xs text-muted">النقاط المتوقعة</span><strong className="stat-number">{result.expectedPoints.toLocaleString('en-US')}</strong></div>
+          </div>
+          <div className="mt-4 space-y-2 text-xs leading-6 text-muted">
+            <p>التوازن بين المجموعات: <strong className="text-strong">{result.balanceScore}%</strong> — كلما ارتفع قلّ الفارق بين قوة المجموعات.</p>
+            {result.buildings.some((building) => building.enabled && !building.covered && building.unlockMinute > 0) && (
+              <p className="text-amber">مبانٍ مغلقة في بداية المعركة تُركت بلا لاعب: {result.buildings.filter((building) => building.enabled && !building.covered && building.unlockMinute > 0).map((building) => `${building.name} (الدقيقة ${building.unlockMinute})`).join('، ')}.</p>
+            )}
           </div>
         </section>
       </div>

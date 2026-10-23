@@ -1,81 +1,88 @@
-import { sortBuildingsByImportance } from '@/app/lib/buildings';
+import { sortBuildingsByPriority, WAR_DURATION_SECONDS } from '@/app/lib/buildings';
 import type { Assignment, Building, BuildingResult, DistributionResult, Player } from '@/app/types/domain';
-
-const WAR_SECONDS = 30 * 60;
 
 function roundedScore(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
 /**
- * Assigns strong players first to the currently weakest eligible group, then
- * sends surplus players to the most valuable buildings. This is deterministic:
- * the same input always produces the same plan.
+ * A held building yields points for the seconds it is actually capturable: the
+ * centre cannot be taken before its unlock minute, so it earns less than a
+ * building that is open from the start.
+ */
+function productionSeconds(building: Building): number {
+  return Math.max(0, WAR_DURATION_SECONDS - building.unlockMinute * 60);
+}
+
+function expectedPointsFor(building: Building, playerCount: number): number {
+  if (!building.enabled || playerCount < 1) return 0;
+  return building.rate * productionSeconds(building);
+}
+
+/**
+ * Spreads players over buildings, weighting the plan towards points.
+ *
+ * Points decide the battle, so the highest-yield buildings are filled first.
+ * Buildings that unlock at minute 10 are ranked below the ones open at the
+ * start: with too few players to go around, nobody is parked on a building
+ * that cannot be captured yet.
+ *
+ * - Fewer players than buildings: one player per building, strongest on the
+ *   highest-yield building.
+ * - At least as many players as buildings: an even share, so groups stay
+ *   balanced instead of stacking everyone on a single building.
  */
 export function distributePlayers(players: Player[], buildings: Building[]): DistributionResult {
   const usablePlayers = players.filter((player) => player.name.trim() && Number.isFinite(player.power) && player.power > 0);
-  const orderedBuildings = sortBuildingsByImportance(buildings);
-  const coveredCount = Math.min(orderedBuildings.length, Math.floor(usablePlayers.length / 2));
-  const coveredBuildings = orderedBuildings.slice(0, coveredCount);
-  const groups = new Map<number, Player[]>();
-  coveredBuildings.forEach((building) => groups.set(building.id, []));
-
+  const orderedBuildings = sortBuildingsByPriority(buildings);
   const orderedPlayers = [...usablePlayers].sort((a, b) => b.power - a.power || a.name.localeCompare(b.name));
 
-  // The first pass guarantees two players per covered building. Because the
-  // next player joins the weakest group, strong and weak powers are mixed.
-  for (const player of orderedPlayers) {
-    const incomplete = coveredBuildings.filter((building) => (groups.get(building.id)?.length ?? 0) < 2);
-    if (incomplete.length > 0) {
-      const target = incomplete.reduce((best, candidate) => {
-        const bestPower = (groups.get(best.id) ?? []).reduce((sum, item) => sum + item.power, 0);
-        const candidatePower = (groups.get(candidate.id) ?? []).reduce((sum, item) => sum + item.power, 0);
-        return candidatePower < bestPower ? candidate : best;
-      }, incomplete[0]);
-      groups.get(target.id)?.push(player);
-      continue;
-    }
+  const groups = new Map<number, Player[]>();
+  orderedBuildings.forEach((building) => groups.set(building.id, []));
 
-    // Surplus players reinforce the highest-value buildings first.
-    const reinforcementTarget = coveredBuildings
-      .slice()
-      .sort((a, b) => a.rate - b.rate || a.id - b.id)[0];
-    if (reinforcementTarget) {
-      const target = coveredBuildings.find((building) => building.id === reinforcementTarget.id);
-      if (target) {
-        const weakestImportant = coveredBuildings.reduce((best, candidate) => {
-          const bestGroup = groups.get(best.id) ?? [];
-          const candidateGroup = groups.get(candidate.id) ?? [];
-          if (candidate.rate > best.rate) return candidate;
-          if (candidate.rate < best.rate) return best;
-          return candidateGroup.reduce((sum, item) => sum + item.power, 0) < bestGroup.reduce((sum, item) => sum + item.power, 0) ? candidate : best;
-        }, coveredBuildings[0]);
-        groups.get(weakestImportant.id)?.push(player);
-      }
-    }
+  if (orderedBuildings.length === 0) {
+    return summarize(usablePlayers, buildings, groups, []);
+  }
+
+  if (orderedPlayers.length <= orderedBuildings.length) {
+    // Scarce players: the strongest takes the highest-yield building.
+    orderedPlayers.forEach((player, index) => groups.get(orderedBuildings[index].id)?.push(player));
+  } else {
+    // Plenty of players: deal round-robin in priority order. Because the queue
+    // is sorted by power, each group ends up with a similar total.
+    orderedPlayers.forEach((player, index) => {
+      const building = orderedBuildings[index % orderedBuildings.length];
+      groups.get(building.id)?.push(player);
+    });
   }
 
   const assignments: Assignment[] = [];
+  orderedBuildings.forEach((building) => {
+    (groups.get(building.id) ?? []).forEach((player) => assignments.push({ playerId: player.id, buildingId: building.id }));
+  });
+
+  return summarize(usablePlayers, buildings, groups, assignments);
+}
+
+function summarize(usablePlayers: Player[], buildings: Building[], groups: Map<number, Player[]>, assignments: Assignment[]): DistributionResult {
   const results: BuildingResult[] = buildings.map((building) => {
     const assigned = groups.get(building.id) ?? [];
-    assigned.forEach((player) => assignments.push({ playerId: player.id, buildingId: building.id }));
     const totalPower = assigned.reduce((sum, player) => sum + player.power, 0);
     return {
       ...building,
       players: assigned,
       totalPower,
-      expectedPoints: building.enabled && assigned.length >= 2 ? building.rate * WAR_SECONDS : 0,
-      covered: assigned.length >= 2,
+      expectedPoints: expectedPointsFor(building, assigned.length),
+      covered: assigned.length >= 1,
     };
   });
 
   const assignedPower = results.reduce((sum, building) => sum + building.totalPower, 0);
-  const powers = results.filter((building) => building.covered).map((building) => building.totalPower);
-  const averagePower = powers.length ? powers.reduce((sum, power) => sum + power, 0) / powers.length : 0;
-  const averageDeviation = powers.length
-    ? powers.reduce((sum, power) => sum + Math.abs(power - averagePower), 0) / powers.length
+  const coveredPowers = results.filter((building) => building.covered).map((building) => building.totalPower);
+  const averagePower = coveredPowers.length ? coveredPowers.reduce((sum, power) => sum + power, 0) / coveredPowers.length : 0;
+  const averageDeviation = coveredPowers.length
+    ? coveredPowers.reduce((sum, power) => sum + Math.abs(power - averagePower), 0) / coveredPowers.length
     : 0;
-  const balanceScore = averagePower ? roundedScore(Math.max(0, 100 - (averageDeviation / averagePower) * 100)) : 0;
 
   return {
     assignments,
@@ -86,7 +93,7 @@ export function distributePlayers(players: Player[], buildings: Building[]): Dis
     totalPower: usablePlayers.reduce((sum, player) => sum + player.power, 0),
     assignedPower,
     expectedPoints: results.reduce((sum, building) => sum + building.expectedPoints, 0),
-    balanceScore,
+    balanceScore: averagePower ? roundedScore(Math.max(0, 100 - (averageDeviation / averagePower) * 100)) : 0,
   };
 }
 
@@ -110,7 +117,7 @@ export function resultsFromAssignments(players: Player[], buildings: Building[],
     const buildingAssignments = safeAssignments.filter((assignment) => assignment.buildingId === building.id);
     const assignedPlayers = buildingAssignments.map((assignment) => playerMap.get(assignment.playerId)).filter((player): player is Player => Boolean(player));
     const totalPower = assignedPlayers.reduce((sum, player) => sum + player.power, 0);
-    return { ...building, players: assignedPlayers, totalPower, expectedPoints: building.enabled && assignedPlayers.length >= 2 ? building.rate * WAR_SECONDS : 0, covered: assignedPlayers.length >= 2 };
+    return { ...building, players: assignedPlayers, totalPower, expectedPoints: expectedPointsFor(building, assignedPlayers.length), covered: assignedPlayers.length >= 1 };
   });
   const coveredPowers = result.filter((building) => building.covered).map((building) => building.totalPower);
   const average = coveredPowers.length ? coveredPowers.reduce((sum, power) => sum + power, 0) / coveredPowers.length : 0;
