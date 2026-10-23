@@ -28,7 +28,15 @@ EQA Tactical — Arabic (RTL) war-planning tool. Next.js 14 App Router + TypeScr
 ## Conventions
 - UI copy is Arabic. Keep new user-facing strings Arabic.
 - Domain types live in `app/types/domain.ts`.
-- Colors are hex literals in Tailwind arbitrary values, not theme tokens. Body text
-  must clear WCAG AA 4.5:1 on every panel background; `#8ea6aa` is the verified
-  muted-text token (6.18:1 worst case on `panel2 #12252b`).
+- Theme is LIGHT: white surfaces, near-black text, teal brand. Colors are semantic
+  Tailwind tokens defined in `tailwind.config.ts` (`strong`, `muted`, `label`,
+  `panel`, `panel2`, `fill`, `line`, `brand`, `brand-strong`, `brand-soft`, `amber`,
+  `amber-soft`, `danger`, `danger-soft`). Do not reintroduce hex literals — a palette
+  change must stay in one place. Body text must clear WCAG AA 4.5:1 on every panel
+  background; white text is only valid on a solid `bg-brand`/`bg-strong` fill.
+- The brand token is `brand`, NOT `accent`: Tailwind's built-in `accentColor` plugin
+  owns the `accent-*` namespace, so `text-accent`/`bg-accent` fail to compile.
+- Player rows grow progressively: `players` holds one trailing blank row and
+  `ensureTrailingBlank` appends a new one as soon as the last is filled. Blank rows
+  use `blank-<n>` ids, never persisted (`persist` maps them to `crypto.randomUUID()`).
 - Unit tests live in `tests/` and cover pure logic only (`app/lib/*`).

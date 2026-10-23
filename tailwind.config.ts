@@ -5,17 +5,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: '#071014',
-        panel: '#0d1b20',
-        panel2: '#12252b',
-        line: '#1f3a40',
-        cyan: '#44d6c4',
-        'cyan-soft': 'rgba(68, 214, 196, <alpha-value>)',
-        amber: '#f0b45a',
-        danger: '#ef6f6c',
+        // Light theme: white surfaces, near-black text, teal brand.
+        // `strong` is body/heading text, `muted` secondary text, `label` form labels.
+        strong: '#0a0f10',
+        muted: '#4a5a5e',
+        label: '#3d4c50',
+        panel: '#ffffff',
+        panel2: '#f4f7f8',
+        fill: '#f8fafb',
+        line: '#d5e0e2',
+        brand: '#0d6f63',
+        'brand-strong': '#0f766e',
+        'brand-soft': '#e7f1ef',
+        amber: '#8a5300',
+        'amber-soft': '#f3eee6',
+        danger: '#b3261e',
+        'danger-soft': '#f7e9e8',
       },
       boxShadow: {
-        glow: '0 0 0 1px rgba(68,214,196,.16), 0 16px 50px rgba(0,0,0,.28)',
+        glow: '0 1px 2px rgba(10,15,16,.05), 0 10px 30px rgba(10,15,16,.07)',
       },
     },
   },

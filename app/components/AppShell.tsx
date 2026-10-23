@@ -34,7 +34,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="shell">
-      <header className="sticky top-0 z-40 border-b border-line/70 bg-ink/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-line/70 bg-white/90 backdrop-blur-xl">
         <div className="container-page flex h-[76px] items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button className="btn-ghost lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="فتح القائمة">
@@ -46,17 +46,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {links.map(({ href, label, icon: Icon }) => {
               // `trailingSlash: true` makes pathname end with "/", so compare the normalized form.
               const active = pathname.replace(/\/+$/, '') === href.replace(/\/+$/, '');
-              return <Link key={href} href={href} className={active ? 'btn-secondary border-cyan/50 text-cyan' : 'btn-ghost'}><Icon size={16} />{label}</Link>;
+              return <Link key={href} href={href} className={active ? 'btn-secondary border-brand/50 text-brand' : 'btn-ghost'}><Icon size={16} />{label}</Link>;
             })}
           </div>
           <div className="flex items-center gap-3">
-            {email && <span className="hidden max-w-[180px] truncate text-xs text-[#8ea6aa] sm:block">{email}</span>}
+            {email && <span className="hidden max-w-[180px] truncate text-xs text-muted sm:block">{email}</span>}
             <button className="btn-ghost" onClick={logout} title="تسجيل الخروج"><LogOut size={17} /><span className="hidden sm:inline">خروج</span></button>
           </div>
         </div>
-        {open && <nav className="border-t border-line/70 bg-panel px-4 py-3 lg:hidden">{links.map(({ href, label, icon: Icon }) => <Link key={href} onClick={() => setOpen(false)} href={href} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-[#c8dddd] hover:bg-cyan-soft hover:text-white"><Icon size={17} />{label}</Link>)}</nav>}
+        {open && <nav className="border-t border-line/70 bg-panel px-4 py-3 lg:hidden">{links.map(({ href, label, icon: Icon }) => <Link key={href} onClick={() => setOpen(false)} href={href} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-label hover:bg-brand-soft hover:text-strong"><Icon size={17} />{label}</Link>)}</nav>}
       </header>
-      {!isSupabaseConfigured && <div className="container-page pt-5"><div className="rounded-xl border border-amber/25 bg-amber/10 px-4 py-2 text-xs text-[#f5d39b]">وضع الإعداد: أضف اتصال Supabase لتفعيل الحسابات والحفظ الدائم.</div></div>}
+      {!isSupabaseConfigured && <div className="container-page pt-5"><div className="rounded-xl border border-amber/25 bg-amber/10 px-4 py-2 text-xs text-amber">وضع الإعداد: أضف اتصال Supabase لتفعيل الحسابات والحفظ الدائم.</div></div>}
       <main>{children}</main>
     </div>
   );

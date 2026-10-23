@@ -3,17 +3,22 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  --bg: #071014;
-  --panel: #0d1b20;
-  --panel-2: #12252b;
-  --line: #1f3a40;
-  --muted: #8ea6aa;
-  --text: #edf7f5;
-  --cyan: #44d6c4;
-  --cyan-soft: rgba(68, 214, 196, .13);
-  --amber: #f0b45a;
-  --danger: #ef6f6c;
+  color-scheme: light;
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #f4f7f8;
+  --fill: #f8fafb;
+  --line: #d5e0e2;
+  --muted: #4a5a5e;
+  --label: #3d4c50;
+  --text: #0a0f10;
+  --brand: #0d6f63;
+  --brand-strong: #0f766e;
+  --brand-soft: #e7f1ef;
+  --amber: #8a5300;
+  --amber-soft: #f3eee6;
+  --danger: #b3261e;
+  --danger-soft: #f7e9e8;
 }
 
 * { box-sizing: border-box; }
@@ -21,51 +26,55 @@ html { background: var(--bg); }
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at 76% -10%, rgba(68, 214, 196, .13), transparent 30rem),
-    linear-gradient(145deg, #071014 0%, #09171b 45%, #071014 100%);
+  background: var(--bg);
   color: var(--text);
   font-family: Tahoma, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 button, input, textarea, select { font: inherit; }
+/* iOS Safari auto-zooms when a focused field's text is under 16px, which rescales
+   the layout mid-typing. A bare element selector cannot outrank the `text-sm` and
+   `text-xs` utilities that size these fields, so the floor is forced here. */
+input, textarea, select { font-size: 16px !important; }
 button { cursor: pointer; }
-::selection { background: rgba(68, 214, 196, .32); color: white; }
+::selection { background: rgba(13, 111, 99, .22); color: var(--text); }
 
 :focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
 
 @layer components {
   .shell { @apply min-h-screen bg-transparent; }
   .container-page { @apply mx-auto w-full max-w-[1500px] px-4 sm:px-6 lg:px-8; }
-  .panel { @apply rounded-2xl border border-line bg-panel/90 shadow-glow; }
-  .panel-soft { @apply rounded-2xl border border-line/80 bg-panel2/70; }
-  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.2em] text-cyan; }
-  .heading-xl { @apply text-3xl font-black tracking-tight text-white sm:text-5xl; }
-  .heading-lg { @apply text-2xl font-black tracking-tight text-white; }
-  .muted { @apply text-sm leading-7 text-[#8ea6aa]; }
-  .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-cyan px-4 py-3 text-sm font-black text-ink transition hover:bg-[#72e3d5] disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-3 text-sm font-bold text-white transition hover:border-cyan/60 hover:bg-[#18343a] disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-[#a9c2c3] transition hover:bg-cyan-soft hover:text-white; }
-  .field { @apply mt-2 w-full rounded-xl border border-line bg-[#09161a] px-3 py-3 text-sm text-white outline-none transition placeholder:text-[#8ea6aa] focus:border-cyan focus:ring-2 focus:ring-cyan/10; }
-  .label { @apply text-xs font-bold text-[#b8cdce]; }
-  .stat-number { @apply mt-2 block text-2xl font-black tabular-nums text-white; }
+  .panel { @apply rounded-2xl border border-line bg-panel shadow-glow; }
+  .panel-soft { @apply rounded-2xl border border-line/70 bg-panel2; }
+  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.2em] text-brand; }
+  .heading-xl { @apply text-3xl font-black tracking-tight text-strong sm:text-5xl; }
+  .heading-lg { @apply text-2xl font-black tracking-tight text-strong; }
+  .muted { @apply text-sm leading-7 text-muted; }
+  .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-black text-white transition hover:bg-brand-strong disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-3 text-sm font-bold text-strong transition hover:border-brand/50 hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-label transition hover:bg-brand-soft hover:text-strong; }
+  .field { @apply mt-2 w-full rounded-xl border border-line bg-fill px-3 py-3 text-sm text-strong outline-none transition placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/15; }
+  .label { @apply text-xs font-bold text-label; }
+  .stat-number { @apply mt-2 block text-2xl font-black tabular-nums text-strong; }
 }
 
 .grid-noise {
-  background-image: linear-gradient(rgba(68,214,196,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(68,214,196,.04) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(13,111,99,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(13,111,99,.05) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
 .map-frame {
-  box-shadow: 0 0 0 1px rgba(68,214,196,.22), 0 20px 70px rgba(0,0,0,.44);
+  box-shadow: 0 0 0 1px rgba(13,111,99,.25), 0 18px 50px rgba(10,15,16,.16);
 }
 
 .map-label {
   backdrop-filter: blur(8px);
-  background: rgba(5, 16, 19, .88);
-  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 6px 20px rgba(10,15,16,.18);
 }
 
 .scanline::after {
@@ -73,7 +82,6 @@ button { cursor: pointer; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(transparent 50%, rgba(68,214,196,.025) 50%);
+  background: linear-gradient(transparent 50%, rgba(13,111,99,.04) 50%);
   background-size: 100% 4px;
-  mix-blend-mode: screen;
 }
