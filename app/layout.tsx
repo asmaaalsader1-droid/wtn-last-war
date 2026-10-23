@@ -3,8 +3,8 @@ import { ZoomGuard } from '@/app/components/ZoomGuard';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'EQA Tactical — توزيع القوة',
-  description: 'منصة تكتيكية لتوزيع لاعبي التحالف على مباني الحرب.',
+  title: 'EQA Tactical — توزيع عاصفة الصحراء',
+  description: 'منصة مستقلة لتوزيع لاعبي التحالف على مباني حرب عاصفة الصحراء.',
 };
 
 // `maximumScale`/`userScalable` stop the manual pinch zoom, and the 16px font
