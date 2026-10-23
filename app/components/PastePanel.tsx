@@ -17,9 +17,9 @@ interface PreviewRow extends ParsedPlayerLine {
 }
 
 const STATUS_LABEL: Record<ParsedPlayerLine['status'], string> = {
-  ok: 'تم التعرف',
-  'missing-power': 'بدون قوة',
-  'no-name': 'بدون اسم',
+  ok: 'تم التسجيل',
+  'missing-power': ' يجب كتابة قوة المشارك',
+  'no-name': 'يجب كتابة اسم المشارك',
 };
 
 export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelProps) {
@@ -77,7 +77,7 @@ export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelPro
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-soft text-brand"><ClipboardPaste size={18} /></span>
             <div>
               <h2 className="text-base font-black text-strong">لصق قائمة اللاعبين</h2>
-              <p className="text-xs text-muted">الصق الأسماء والقوى، وسيتم التعرف عليها تلقائياً.</p>
+              <p className="text-xs text-muted">ااسم اللاعب وبجانبة القوة بنفس السطر </p>
             </div>
           </div>
           <button className="btn-ghost" onClick={onCancel} aria-label="إغلاق"><X size={18} /></button>
@@ -90,7 +90,7 @@ export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelPro
               className="field min-h-32 resize-y font-mono text-xs"
               value={text}
               onChange={(event) => setText(event.target.value)}
-              placeholder={'أبو علي 50M\nمحمد, 30,000,000\n1. خالد - 15M\nسعيد 5k'}
+              placeholder={'القطوة 60\nزطمة 50\nكراتوس الطائر 48\nابو حاجب 50'}
               autoFocus
             />
           </label>
@@ -112,7 +112,7 @@ export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelPro
                 استبدال القائمة
               </button>
             </div>
-            <span className="text-muted">تم التعرف على <strong className="text-brand">{rows.length}</strong> سطر</span>
+            <span className="text-muted">تم تسجيل <strong className="text-brand">{rows.length}</strong> سطر</span>
             {skipped > 0 && <span className="text-muted">تم تجاهل <strong className="text-amber">{skipped}</strong></span>}
           </div>
 
@@ -128,8 +128,8 @@ export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelPro
                       className="w-full min-w-0 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-strong outline-none focus:border-brand/50"
                       value={row.name}
                       onChange={(event) => updateRow(row.key, 'name', event.target.value)}
-                      placeholder="اسم اللاعب"
-                      aria-label="اسم اللاعب"
+                      placeholder="اسم المشارك"
+                      aria-label="اسم المشارك"
                     />
                     <input
                       className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm tabular-nums text-brand outline-none focus:border-brand/50"
@@ -137,7 +137,7 @@ export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelPro
                       value={row.power || ''}
                       onChange={(event) => updateRow(row.key, 'power', event.target.value)}
                       placeholder="القوة"
-                      aria-label="قوة اللاعب"
+                      aria-label="قوة المشارك"
                     />
                     <span className={`text-[11px] font-bold ${row.duplicate ? 'text-danger' : row.status === 'ok' ? 'text-brand' : 'text-amber'}`}>
                       {row.duplicate ? 'اسم مكرر' : STATUS_LABEL[row.status]}
@@ -154,14 +154,14 @@ export function PastePanel({ existingNames, onCancel, onConfirm }: PastePanelPro
           {blocked && (
             <div className="flex items-center gap-2 rounded-xl border border-danger/30 bg-danger/10 px-3 py-2 text-xs text-danger" role="alert">
               <AlertTriangle size={15} className="shrink-0 text-danger" />
-              يوجد اسم مكرر. صحّحه أو احذف السطر قبل التأكيد.
+              يوجد اسم مكرر. عدل أو احذف السطر قبل التأكيد.
             </div>
           )}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-4">
           <span className="text-xs text-muted">
-            {usableRows.length > 0 ? <>سيتم إضافة <strong className="text-brand">{usableRows.length}</strong> لاعب بقوة أكبر من صفر</> : 'لا يوجد لاعبون صالحون بعد'}
+            {usableRows.length > 0 ? <>سيتم إضافة <strong className="text-brand">{usableRows.length}</strong> لاعب بقوة أكبر من صفر</> : 'لا يوجد مشاركين بعد'}
           </span>
           <div className="flex gap-2">
             <button className="btn-secondary" onClick={onCancel}>إلغاء</button>
