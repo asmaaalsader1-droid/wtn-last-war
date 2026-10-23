@@ -44,7 +44,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="hidden items-center gap-2 lg:flex">
             {links.map(({ href, label, icon: Icon }) => {
-              const active = pathname === href;
+              // `trailingSlash: true` makes pathname end with "/", so compare the normalized form.
+              const active = pathname.replace(/\/+$/, '') === href.replace(/\/+$/, '');
               return <Link key={href} href={href} className={active ? 'btn-secondary border-cyan/50 text-cyan' : 'btn-ghost'}><Icon size={16} />{label}</Link>;
             })}
           </div>

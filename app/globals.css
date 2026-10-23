@@ -31,6 +31,11 @@ button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
 ::selection { background: rgba(68, 214, 196, .32); color: white; }
 
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
 @layer components {
   .shell { @apply min-h-screen bg-transparent; }
   .container-page { @apply mx-auto w-full max-w-[1500px] px-4 sm:px-6 lg:px-8; }
@@ -43,7 +48,7 @@ button { cursor: pointer; }
   .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-cyan px-4 py-3 text-sm font-black text-ink transition hover:bg-[#72e3d5] disabled:cursor-not-allowed disabled:opacity-50; }
   .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-3 text-sm font-bold text-white transition hover:border-cyan/60 hover:bg-[#18343a] disabled:cursor-not-allowed disabled:opacity-50; }
   .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-[#a9c2c3] transition hover:bg-cyan-soft hover:text-white; }
-  .field { @apply mt-2 w-full rounded-xl border border-line bg-[#09161a] px-3 py-3 text-sm text-white outline-none transition placeholder:text-[#597174] focus:border-cyan focus:ring-2 focus:ring-cyan/10; }
+  .field { @apply mt-2 w-full rounded-xl border border-line bg-[#09161a] px-3 py-3 text-sm text-white outline-none transition placeholder:text-[#8ea6aa] focus:border-cyan focus:ring-2 focus:ring-cyan/10; }
   .label { @apply text-xs font-bold text-[#b8cdce]; }
   .stat-number { @apply mt-2 block text-2xl font-black tabular-nums text-white; }
 }

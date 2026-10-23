@@ -30,7 +30,7 @@ export default function HomePage() {
         {principles.map(({ icon: Icon, title, text }) => <article key={title} className="panel-soft p-5"><div className="mb-7 grid h-10 w-10 place-items-center rounded-xl bg-cyan-soft text-cyan"><Icon size={20} /></div><h2 className="text-base font-black text-white">{title}</h2><p className="mt-3 text-sm leading-7 text-[#8ea6aa]">{text}</p></article>)}
       </section>
       <section className="container-page pb-16"><div className="panel flex flex-col items-start justify-between gap-6 p-6 sm:flex-row sm:items-center sm:p-8"><div><span className="eyebrow">EQA TACTICAL / 01</span><h2 className="mt-2 text-xl font-black text-white">الخريطة النهائية بصيغة قابلة للمشاركة</h2><p className="mt-2 text-sm text-[#8ea6aa]">أضف أسماء اللاعبين بجوار كل مبنى وصدّر المخطط كصورة PNG واضحة.</p></div><Users className="hidden text-cyan sm:block" size={40} /></div></section>
-      <footer className="container-page border-t border-line/70 py-7 text-xs text-[#718b8f]">EQA Tactical — أداة تخطيط مستقلة. لا تنفذ أوامر داخل اللعبة.</footer>
+      <footer className="container-page border-t border-line/70 py-7 text-xs text-[#8ea6aa]">EQA Tactical — أداة تخطيط مستقلة. لا تنفذ أوامر داخل اللعبة.</footer>
     </div>
   );
 }
