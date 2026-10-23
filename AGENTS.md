@@ -11,9 +11,11 @@ EQA Tactical — Arabic (RTL) war-planning tool. Next.js 14 App Router + TypeScr
 - `corepack pnpm build` — production build
 
 ## Gotchas
-- **Never run `build` while `dev` is running.** Both write `.next/`, and the build
-  corrupts the dev server's module cache (`MODULE_NOT_FOUND` on every route).
-  Fix: kill dev, `rm -rf .next`, restart dev.
+- `next.config.mjs` sets `distDir` to `.next-dev` under `NODE_ENV=development`, so
+  `dev` and `build` never share a directory and a build can no longer break a running
+  dev server. Keep it that way: if both write to one distDir, every `/_next/static/*`
+  request 404s and the page loads with no JS or CSS. If you do see that, kill dev,
+  `rm -rf .next .next-dev`, and restart.
 - `next.config` sets `trailingSlash: true`, so `usePathname()` returns a path with a
   trailing slash. Compare nav links with a normalized form, not `pathname === href`.
 - `tsconfig` targets `es5`. Spreading a `Set`/`Map` iterator (`[...someSet]`) fails
