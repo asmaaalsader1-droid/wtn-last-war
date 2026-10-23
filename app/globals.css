@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg: #071014;
+  --panel: #0d1b20;
+  --panel-2: #12252b;
+  --line: #1f3a40;
+  --muted: #8ea6aa;
+  --text: #edf7f5;
+  --cyan: #44d6c4;
+  --cyan-soft: rgba(68, 214, 196, .13);
+  --amber: #f0b45a;
+  --danger: #ef6f6c;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 76% -10%, rgba(68, 214, 196, .13), transparent 30rem),
+    linear-gradient(145deg, #071014 0%, #09171b 45%, #071014 100%);
+  color: var(--text);
+  font-family: Tahoma, Arial, sans-serif;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+::selection { background: rgba(68, 214, 196, .32); color: white; }
+
+@layer components {
+  .shell { @apply min-h-screen bg-transparent; }
+  .container-page { @apply mx-auto w-full max-w-[1500px] px-4 sm:px-6 lg:px-8; }
+  .panel { @apply rounded-2xl border border-line bg-panel/90 shadow-glow; }
+  .panel-soft { @apply rounded-2xl border border-line/80 bg-panel2/70; }
+  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.2em] text-cyan; }
+  .heading-xl { @apply text-3xl font-black tracking-tight text-white sm:text-5xl; }
+  .heading-lg { @apply text-2xl font-black tracking-tight text-white; }
+  .muted { @apply text-sm leading-7 text-[#8ea6aa]; }
+  .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-cyan px-4 py-3 text-sm font-black text-ink transition hover:bg-[#72e3d5] disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-3 text-sm font-bold text-white transition hover:border-cyan/60 hover:bg-[#18343a] disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-[#a9c2c3] transition hover:bg-cyan-soft hover:text-white; }
+  .field { @apply mt-2 w-full rounded-xl border border-line bg-[#09161a] px-3 py-3 text-sm text-white outline-none transition placeholder:text-[#597174] focus:border-cyan focus:ring-2 focus:ring-cyan/10; }
+  .label { @apply text-xs font-bold text-[#b8cdce]; }
+  .stat-number { @apply mt-2 block text-2xl font-black tabular-nums text-white; }
+}
+
+.grid-noise {
+  background-image: linear-gradient(rgba(68,214,196,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(68,214,196,.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.map-frame {
+  box-shadow: 0 0 0 1px rgba(68,214,196,.22), 0 20px 70px rgba(0,0,0,.44);
+}
+
+.map-label {
+  backdrop-filter: blur(8px);
+  background: rgba(5, 16, 19, .88);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+
+.scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(transparent 50%, rgba(68,214,196,.025) 50%);
+  background-size: 100% 4px;
+  mix-blend-mode: screen;
+}

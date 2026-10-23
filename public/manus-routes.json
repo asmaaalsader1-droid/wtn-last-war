@@ -1,0 +1,11 @@
+{
+  "routes": [
+    { "path": "/", "title": "EQA Tactical" },
+    { "path": "/login", "title": "تسجيل الدخول" },
+    { "path": "/signup", "title": "إنشاء حساب" },
+    { "path": "/dashboard", "title": "لوحة التحكم" },
+    { "path": "/plan", "title": "إنشاء خطة" },
+    { "path": "/plans", "title": "خططي المحفوظة" },
+    { "path": "/settings", "title": "الإعدادات" }
+  ]
+}
