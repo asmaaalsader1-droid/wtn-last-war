@@ -5,8 +5,8 @@ export function SetupNotice() {
     <div className="flex gap-3 rounded-2xl border border-amber/30 bg-amber/10 p-4 text-sm leading-7 text-amber">
       <Info className="mt-1 shrink-0 text-amber" size={18} />
       <div>
-        <strong className="block text-strong">قاعدة البيانات غير مهيأة بعد</strong>
-        <span>أضف متغيري Supabase في ملف البيئة ثم أعد تشغيل الموقع. لا يتم عرض بيانات تجريبية مكان بياناتك.</span>
+        <strong className="block text-strong">خطأ في الخادم يرجى اعادة المحاولة    </strong>
+        <span> اذا استمر الخطأ اتصل بمالك المشروع   </span>
       </div>
     </div>
   );
